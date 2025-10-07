@@ -1,0 +1,164 @@
+:root{
+  --white-bg: #ffffff;
+  --panel: rgba(162, 217, 205, 0.95);
+  --muted: #6b7280;
+  --accent1: #8bd26f; /* green */
+  --accent2: #f6e05e; /* yellow */
+  --accent-grad: linear-gradient(90deg, var(--accent1), var(--accent2));
+  --node-size: 64px;
+}
+
+/* Basic reset */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--white-bg);
+  color:#0f172a;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* App layout */
+.app{display:flex; flex-direction:column; min-height:100vh}
+.topbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 22px;
+  border-bottom:1px solid rgba(15,23,42,0.04);
+  background: rgba(255,255,255,0.8);
+}
+.brand-wrap{display:flex; flex-direction:column}
+.brand{font-weight:800; margin:0; font-size:18px; color:#064e3b}
+.tagline{font-size:13px; color:var(--muted)}
+
+.profile{display:flex; gap:12px; align-items:center}
+.stat{font-weight:600; font-size:13px; color:#0f172a}
+
+/* Main */
+.main{display:flex; gap:18px; padding:18px; flex:1}
+.map-wrap{
+  flex:1; overflow:auto; padding:12px; border-radius:12px;
+  background: var(--white-bg);
+  box-shadow: 0 8px 24px rgba(3,7,18,0.06);
+  border: 1px solid rgba(10,20,10,0.04);
+}
+.side{width:320px}
+.panel{
+  background:var(--white-bg); padding:16px; border-radius:12px; border:1px solid rgba(15,23,42,0.04);
+}
+
+/* Path container (big vertical world) */
+.path{
+  position:relative;
+  width:760px;
+  max-width:100%;
+  margin: 18px auto;
+  padding: 40px 36px;
+  background: var(--white-bg);
+  border-radius: 20px;
+  min-height:1800px; /* long so users scroll */
+  box-shadow: 0 12px 40px rgba(3,7,18,0.06);
+  overflow:visible;
+}
+
+/* sky decoration */
+.sky-decor{ width:100%; height:64px; opacity:0.85; margin-bottom:8px }
+
+/* connector vertical (decorative path) */
+.connector-long{
+  position:absolute; left:50%; top:20px; bottom:20px; width:6px;
+  transform:translateX(-50%);
+  border-radius:6px;
+  background: linear-gradient(180deg, rgba(139,210,111,0.2), rgba(246,224,94,0.14));
+  box-shadow: inset 0 -8px 18px rgba(255,255,255,0.06);
+  z-index:1;
+}
+
+/* Biome decorations - rows of grass / trees positioned */
+.biome-row{
+  position:absolute; left:0; right:0; height:120px; display:block; pointer-events:none;
+}
+.grass {
+  width:100%; height:100%; background-image: radial-gradient(circle at 10% 80%, #c9f0b8 8px, transparent 9px), radial-gradient(circle at 30% 85%, #bfeaa9 7px, transparent 8px), radial-gradient(circle at 60% 80%, #c7f1b6 8px, transparent 9px);
+  opacity:0.95;
+  mix-blend-mode: multiply;
+}
+
+/* nodes container */
+.nodes-container{ position:relative; z-index:6; }
+
+/* node */
+.node {
+  width:var(--node-size); height:var(--node-size); border-radius:50%;
+  position:absolute; transform:translate(-50%,-50%);
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px;
+  cursor:pointer; transition:transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+  z-index:8;
+  border: 6px solid #fff;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+  background: linear-gradient(180deg,#ffffff,#f7ffed);
+  color:#064e3b;
+}
+.node.locked{ filter:grayscale(0.7) brightness(0.86); cursor: default; opacity:0.6 }
+.node.unlocked{ background: var(--panel); color:#064e3b }
+.node.completed{ background: var(--accent-grad); color:#052e13; transform:scale(1.06); box-shadow: 0 12px 36px rgba(12,74,24,0.12) }
+
+/* small xp badge below each node */
+.node .xp-badge{
+  position:absolute; bottom:-20px; left:50%; transform:translateX(-50%); font-size:12px; font-weight:700; color:#0f172a; width: 100px; text-align: center;
+  background: rgba(255,255,255,0.9); padding:4px 8px; border-radius:999px; border:1px solid rgba(15,23,42,0.04);
+}
+
+/* connectors between nodes (small) */
+.node-connector {
+  position:absolute; width:6px; background: linear-gradient(180deg,#e6ffde,#fff8d0); left:50%; transform:translateX(-50%); z-index:3; border-radius:6px;
+}
+
+/* modal */
+.modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; backdrop-filter: blur(6px); background: rgba(2,6,23,0.18); z-index:120 }
+.modal.hidden{ display:none }
+.modal-card{ width:min(820px,96%); background:var(--white-bg); border-radius:14px; padding:20px; box-shadow: 0 20px 50px rgba(2,6,23,0.12); position:relative }
+.close-btn{ position:absolute; right:14px; top:14px; background:transparent; border:none; font-size:18px; cursor:pointer; color:#064e3b }
+
+/* quiz UI */
+.quiz-header{ display:flex; justify-content:space-between; align-items:center; gap:20px }
+.quiz-header h2{ margin:0; color:#064e3b }
+.small{ font-size:13px; color:var(--muted) }
+
+.node-xp{ width:320px }
+.progress-track{ height:12px; background: linear-gradient(90deg, rgba(10,100,40,0.06), rgba(250,200,40,0.04)); border-radius:12px; overflow:hidden; margin-top:8px }
+.progress-bar{ height:12px; width:0%; background: linear-gradient(90deg,#8bd26f,#f6e05e); transition: width 260ms linear; border-radius:12px }
+.progress-numbers{ font-size:13px; margin-top:6px; color:#064e3b }
+
+/* question area */
+.quiz-body{ margin-top:18px }
+.question-text{ font-weight:700; font-size:18px; margin-bottom:12px; color:#064e3b }
+.options-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+.option-btn{
+  padding:12px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:700; background:#999999; color:#064e3b;
+  box-shadow: 0 8px 20px rgba(3,7,18,0.06);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+.option-btn:hover{ transform: translateY(-4px) }
+.option-btn.correct{ background: linear-gradient(90deg,#a7f3d0,#bbf7d0); color:#064e3b }
+.option-btn.wrong{ background: linear-gradient(90deg,#fed7d7,#fecaca); color:#58151a }
+.feedback{ height:28px; margin-top:12px; font-weight:700; text-align:center; font-size:15px; color:#064e3b }
+
+/* legend */
+.legend{ display:flex; gap:10px; align-items:center; margin-top:10px }
+.legend-dot{ width:14px; height:14px; border-radius:50%; display:inline-block; margin-right:8px }
+.legend-dot.unlocked{ background: rgba(162, 217, 205, 0.95); border:1px solid #9ef08f }
+.legend-dot.locked{ background: #f1f5f9; border:1px solid #e6e9ef }
+.legend-dot.completed{ background: linear-gradient(90deg,#8bd26f,#f6e05e); border:1px solid #74c24f }
+
+/* confetti canvas */
+.confetti-canvas{ position:fixed; inset:0; pointer-events:none; z-index:140 }
+
+/* responsive tweaks */
+@media (max-width:980px){
+  .main{flex-direction:column}
+  .side{width:100%}
+  .path{ min-height:1400px }
+  .node .xp-badge{ font-size:11px; bottom:-18px }
+}

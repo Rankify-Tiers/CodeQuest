@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CodeQuest</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <h1 class="brand">CodeQuest</h1>
+        <div class="tagline">Learn HTML • Level Up • Explore biomes</div>
+      </div>
+      <div class="profile">
+        <div class="stat">Node: <span id="current-node-display">1</span></div>
+        <div class="stat">Total XP: <span id="global-xp">0</span></div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="map-wrap" id="map-wrap" tabindex="0">
+        <!-- long vertical path containing the map -->
+        <div class="path" id="path">
+          <!-- decorative repeating clouds -->
+          <svg class="sky-decor" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden>
+            <defs>
+              <linearGradient id="gSky" x1="0" x2="1">
+                <stop offset="0" stop-color="#ffffff" stop-opacity="0.6" />
+                <stop offset="1" stop-color="#fff9" stop-opacity="0.3" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="100" height="30" fill="url(#gSky)"></rect>
+          </svg>
+
+          <div id="nodes-container" class="nodes-container"></div>
+
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="panel">
+          <h3>How it works</h3>
+          <p>Click an unlocked node to practice HTML. Correct answers give XP. Each node needs a bit more XP than the last, and questions get harder as you progress.</p>
+          <p class="muted">Scroll down to explore more levels and biomes. Progress is saved locally.</p>
+          <hr />
+          <div class="legend">
+            <div><span class="legend-dot unlocked"></span>Unlocked</div>
+            <div><span class="legend-dot locked"></span>Locked</div>
+            <div><span class="legend-dot completed"></span>Completed</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-card">
+        <button id="close-quiz" class="close-btn" title="Back to map">✕</button>
+
+        <div class="quiz-header">
+          <div>
+            <h2 id="quiz-title">Node <span id="quiz-node-number">1</span></h2>
+            <div class="small">Difficulty: <span id="quiz-difficulty">Easy</span></div>
+          </div>
+
+          <div class="node-xp">
+            <div class="progress-label">Node XP</div>
+            <div class="progress-track">
+              <div id="node-progress" class="progress-bar"></div>
+            </div>
+            <div class="progress-numbers"><span id="node-xp">0</span>/<span id="node-xp-required">100</span> XP</div>
+          </div>
+        </div>
+
+        <div class="quiz-body">
+          <div id="question-text" class="question-text">Question will appear here</div>
+          <div id="options" class="options-grid"></div>
+          <div id="feedback" class="feedback"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
