@@ -359,14 +359,89 @@ function handleAnswer(q, selectedIndex, btnEl){
 }
 
 /* ---------- PROGRESS & HEADER ---------- */
-function updateNodeProgressUI(){
+/* ---------- HEADER & PROGRESS ---------- */
+
+// Updates only the top-right XP and current node
+function updateHeaderStats() {
+  currentNodeDisplay.textContent = state.currentNode + 1;
+  const totalXP = state.nodes.reduce((sum, n) => sum + n.xp, 0);
+  globalXpDisplay.textContent = totalXP;
+}
+
+// Updates the quiz modal progress bar and calls header update
+function updateNodeProgressUI() {
+  if (!quizNode) return; // safety check if no quiz is open
+
   const needed = nodeXpRequired(currentQuizNodeIdx);
+  
+  // Update modal node progress bar
   nodeProgressEl.style.width = `${(quizNode.xp / needed) * 100}%`;
   nodeXpText.textContent = `${quizNode.xp}`;
   nodeXpReqText.textContent = `${needed}`;
-  currentNodeDisplay.textContent = state.currentNode + 1;
-  const totalXP = state.nodes.reduce((s,n)=> s+n.xp, 0);
-  globalXpDisplay.textContent = totalXP;
+
+  // Update top-right header
+  updateHeaderStats();
+}
+
+/* ---------- INIT ---------- */
+
+// Load saved state
+state = loadState();
+
+// Render map and header immediately
+renderMap();
+updateHeaderStats();
+
+// Keep XP correct on resize
+window.addEventListener('resize', () => { 
+  renderMap(); 
+  updateHeaderStats();
+});
+
+// Save progress on page unload
+window.addEventListener('beforeunload', () => saveState());
+
+/* ---------- QUIZ ANSWER HANDLER (XP Saving) ---------- */
+
+function handleAnswer(q, selectedIndex, btnEl) {
+  const correct = q.a;
+  if (selectedIndex === correct) {
+    btnEl.classList.add('correct');
+    feedbackEl.textContent = '✅ Correct!';
+    const needed = nodeXpRequired(currentQuizNodeIdx);
+
+    // Update XP and save state
+    quizNode.xp = clamp(quizNode.xp + XP_PER_CORRECT, 0, needed);
+    saveState();
+    updateNodeProgressUI();
+
+    // If node is complete, unlock next node
+    if (quizNode.xp >= needed) {
+      quizNode.completed = true;
+      const next = state.nodes[currentQuizNodeIdx + 1];
+      if (next) next.unlocked = true;
+      saveState();
+      launchConfetti();
+      setTimeout(() => {
+        quizModal.classList.add('hidden');
+        renderMap();
+      }, 900);
+      return;
+    }
+
+    setTimeout(() => {
+      feedbackEl.textContent = '';
+      presentNextQuestion();
+    }, 650);
+
+  } else {
+    btnEl.classList.add('wrong');
+    feedbackEl.textContent = '❌ Try another one!';
+    setTimeout(() => {
+      feedbackEl.textContent = '';
+      presentNextQuestion();
+    }, 700);
+  }
 }
 
 /* ---------- CONFETTI ---------- */
